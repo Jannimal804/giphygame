@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Giphy API</title>
+</head>
+
+<body>
+
+<form id="gif-form">
+                <label for="gif-input">Add your own gif cluster!</label>
+                <input type="text" id="gif-input"><br>
+          
+                <!-- Button triggers new movie to be added -->
+                <input id="add-gif" type="submit" value="Add your own gif cluster!">
+              </form>
+
+<div id="button-view"></div>
+<div id="gif-view"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+
+    var topics= ["Sailor Moon", "Pitbulls", "Real Housewives", "Tripod Dogs"]
+
+    // Example queryURL for Giphy API
+
+$(document).on("click",".gif", function() {
+ console.log($(this));
+
+ console.log("here");
+ var gifSet = $(this).attr("data-name");
+ var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+    gifSet + "&api_key=B6oT9iksj4XJC2V3AipQ4i3rLofzymLU&limit=10";
+
+ $.ajax({
+    url: queryURL,
+     method: "GET"
+     })
+    
+     .then(function(response) {
+          // Storing an array of results in the results variable
+          var results = response.data;
+          console.log(response);
+
+
+          // Looping over every result item
+          for (var i = 0; i < results.length; i++) {
+
+            // Only taking action if the photo has an appropriate rating
+            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+              // Creating a div for the gif
+              var gifDiv = $("<div>");
+
+              // Storing the result item's rating
+              var rating = results[i].rating;
+
+              // Creating a paragraph tag with the result item's rating
+              var p = $("<p>").text("Rating: " + rating);
+
+              // Creating an image tag
+              var personImage = $("<img>");
+
+              // Giving the image tag an src attribute of a proprty pulled off the
+              // result item
+              personImage.attr("src", results[i].images.fixed_height.url);
+              personImage.attr("data-set", results[i].images.fixed_height_still.url);
+              console.log(personImage);
+
+              // Appending the paragraph and personImage we created to the "gifDiv" div we created
+              gifDiv.append(p);
+              gifDiv.append(personImage);
+
+              // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+              $("#gif-view").prepend(gifDiv);
+            }
+          }
+        
+
+
+    });
+  });
+
+function renderButtons() {
+$("#gif-view").empty();
+
+// Looping through the array of movies
+for (var i = 0; i < topics.length; i++) {
+
+  // Then dynamicaly generating buttons for each topic in the array.
+  // This code $("<button>") is all jQuery needs to create the start and end tag. (<button></button>)
+  var a = $("<button>");
+  // Adding a class
+  a.addClass("gif");
+  // Adding a data-attribute with a value of the movie at index i
+  a.attr("data-name", topics[i]);
+  // Providing the button's text with a value of the movie at index i
+  a.text(topics[i]);
+  // Adding the button to the HTML
+  $("#button-view").append(a);
+}
+}
+
+$("#add-gif").on("click", function(event) {
+event.preventDefault();
+
+//grab the text from the input box
+var gifPull = $("#gif-input").val().trim();
+topics.push(gifPull);
+
+renderButtons();
+
+// New lines 
+var imageUrl = response.data.image_original_url;
+var gifGif = $("<img>");
+gifGif.addClass("giff")
+gifGif.attr("src", "data-status", imageUrl);
+          gifGif.attr("alt");
+
+          // Prepending the catImage to the images div
+          $("#gif-view").prepend(gifGif);
+
+
+});
+
+renderButtons();
+//
+//onclick event for clicking on gif 
+$(document).on("click", ".giff", function(event) {      
+    var state = $(this).attr("data-state");
+    if (state === "still") {
+        $(this).attr("src", $(this).attr("data-animate"));
+        $(this).attr("data-state", "animate");
+      } else {
+        $(this).attr("src", $(this).attr("data-still"));
+        $(this).attr("data-state", "still");
+      }
+});
+
+//onclick source data-attribute to still^^^ 
+
+//<!-------- new lines ----->
+// $('document').ready(function(){
+//   $gif = $('#gif-view').first();
+  
+//   $('#gif-view').on('click', function(){
+//     src = $gif.attr('src');
+    
+//     $gif.attr('src', src);
+//   });
+// });
+
+
+  </script>
+
+</body>
+
+<!---Psuedo code
+    save strings to a variable called topics
+    Your app should take the topics in this array and create buttons in your HTML.
+
+    Try using a loop that appends a button for each string in the array.
+
+    When the user clicks on a button, the page should grab 10 static, non-animated gif images from the GIPHY API and place them on the page.
+    When the user clicks one of the still GIPHY images, the gif should animate. If the user clicks the gif again, it should stop playing.
+
+    Under every gif, display its rating (PG, G, so on).
+
+    Add a form to your page takes the value from a user input box and adds it into your topics array. Then make a function call that takes 
+    each topic in the array remakes the buttons on the page.
+
+    set all links/calls to HTTPS
+--->
+
+</html>
